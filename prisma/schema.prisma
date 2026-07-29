@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NOTE: SQLite has no native enum support in Prisma, so the following
+// fields are plain Strings constrained by TS union types in lib/types.ts:
+//   Course.direction   -> "A_LEVEL" | "MILLIY_SERTIFIKAT" | "ATTESTATSIYA"
+//   Course.subject      -> "KIMYO" | "BIOLOGIYA" | "MATH"
+//   Enrollment.status   -> "ACTIVE" | "RESET" | "EXPELLED"
+//   BookOrder.status    -> "PENDING" | "AWAITING_ADMIN" | "CONFIRMED" | "REJECTED"
+
+model User {
+  id                 String   @id @default(cuid())
+  firstName          String
+  lastName           String
+  phone              String   @unique
+  passwordHash       String
+  faceDescriptor     String?
+  faceFailedAttempts Int      @default(0)
+  locked             Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  enrollments   Enrollment[]
+  bookOrders    BookOrder[]
+  quizAttempts  QuizAttempt[]
+  notifications Notification[]
+}
+
+model Course {
+  id              String   @id @default(cuid())
+  direction       String
+  subject         String
+  title           String
+  titleEn         String?
+  description     String
+  descriptionEn   String?
+  price           Int
+  telegramBotLink String?
+  createdAt       DateTime @default(now())
+
+  modules     Module[]
+  enrollments Enrollment[]
+
+  @@unique([direction, subject])
+}
+
+model Module {
+  id       String @id @default(cuid())
+  courseId String
+  order    Int
+  title    String
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@unique([courseId, order])
+}
+
+model Lesson {
+  id         String @id @default(cuid())
+  moduleId   String
+  order      Int
+  title      String
+  youtubeUrl String
+
+  module   Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  quiz     Quiz?
+  progress LessonProgress[]
+
+  @@unique([moduleId, order])
+}
+
+model Quiz {
+  id       String @id @default(cuid())
+  lessonId String @unique
+
+  lesson    Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions QuizQuestion[]
+  attempts  QuizAttempt[]
+}
+
+model QuizQuestion {
+  id            String @id @default(cuid())
+  quizId        String
+  text          String
+  optionsJson   String
+  correctOption Int
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  quizId    String
+  userId    String
+  scorePct  Int
+  createdAt DateTime @default(now())
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id                 String    @id @default(cuid())
+  userId             String
+  courseId           String
+  status             String    @default("ACTIVE")
+  warningCount       Int       @default(0)
+  currentModuleOrder Int       @default(1)
+  lastActivityAt     DateTime  @default(now())
+  lastWarningAt      DateTime?
+  createdAt          DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  id              String   @id @default(cuid())
+  userId          String
+  lessonId        String
+  viewCount       Int      @default(0)
+  lastPositionSec Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Book {
+  id            String  @id @default(cuid())
+  subject       String
+  title         String
+  titleEn       String?
+  description   String
+  descriptionEn String?
+  price         Int
+  coverImage    String?
+
+  orders BookOrder[]
+}
+
+model BookOrder {
+  id           String   @id @default(cuid())
+  bookId       String
+  userId       String?
+  groupId      String?
+  quantity     Int      @default(1)
+  name         String
+  phone        String
+  address      String
+  status       String   @default("PENDING")
+  receiptRef   String?
+  rejectReason String?
+  createdAt    DateTime @default(now())
+
+  book Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+}
+
+model AdminUser {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+}
+
+model SmsLog {
+  id        String   @id @default(cuid())
+  phone     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

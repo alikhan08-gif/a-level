@@ -1,0 +1,30 @@
+export const DIRECTIONS = ["A_LEVEL", "MILLIY_SERTIFIKAT", "ATTESTATSIYA"] as const;
+export type Direction = (typeof DIRECTIONS)[number];
+
+export const DIRECTION_LABELS: Record<Direction, string> = {
+  A_LEVEL: "A-Level",
+  MILLIY_SERTIFIKAT: "Milliy sertifikat",
+  ATTESTATSIYA: "Attestatsiya",
+};
+
+export const SUBJECTS = ["KIMYO", "BIOLOGIYA", "MATH"] as const;
+export type Subject = (typeof SUBJECTS)[number];
+
+export const SUBJECT_LABELS: Record<Subject, string> = {
+  KIMYO: "Kimyo",
+  BIOLOGIYA: "Biologiya",
+  MATH: "Math",
+};
+
+export const ENROLLMENT_STATUSES = ["ACTIVE", "EXPELLED"] as const;
+export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
+
+export const ORDER_STATUSES = ["PENDING", "AWAITING_ADMIN", "CONFIRMED", "REJECTED"] as const;
+export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  PENDING: "Boshlangan",
+  AWAITING_ADMIN: "Admin tasdig'ini kutmoqda",
+  CONFIRMED: "Tasdiqlangan",
+  REJECTED: "Rad etilgan",
+};
