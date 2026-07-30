@@ -134,7 +134,7 @@ async function main() {
     console.log(`Admin user created: username=${adminUsername}`);
   }
 
-  const demoPhone = "+998900000000";
+  const demoPhone = "900000000";
   let demoUser = await prisma.user.findUnique({ where: { phone: demoPhone } });
   if (!demoUser) {
     const passwordHash = await bcrypt.hash("demo12345", 10);
