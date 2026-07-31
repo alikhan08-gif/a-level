@@ -7,12 +7,15 @@ import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { LOCALE_COOKIE } from "@/lib/i18n/constants";
 import { UzFlag, GbFlag } from "@/components/Flags";
 import { useCart } from "@/lib/cart-context";
+import NotificationBell from "@/components/NotificationBell";
 
 export default function Header({
   userFirstName,
+  isLoggedIn,
   locale,
 }: {
   userFirstName?: string | null;
+  isLoggedIn?: boolean;
   locale: Locale;
 }) {
   const router = useRouter();
@@ -78,6 +81,12 @@ export default function Header({
             </svg>
             {kabinetLabel}
           </Link>
+
+          {isLoggedIn && (
+            <div className="hidden md:block">
+              <NotificationBell locale={locale} />
+            </div>
+          )}
 
           <Link
             href="/savat"
@@ -173,6 +182,7 @@ export default function Header({
             >
               {kabinetLabel}
             </Link>
+            {isLoggedIn && <NotificationBell locale={locale} />}
             <Link
               href="/savat"
               onClick={() => setMenuOpen(false)}

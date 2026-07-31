@@ -16,6 +16,11 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     order.phone,
     `Buyurtmangiz qabul qilindi. Uni 24-72 soat ichida "UzPost" orqali yetkazamiz. Diqqat-e'tiborli bo'ling.`
   );
+  if (order.userId) {
+    await prisma.notification.create({
+      data: { userId: order.userId, message: `"${order.book.title}" kitobiga buyurtmangiz tasdiqlandi.` },
+    });
+  }
 
   return NextResponse.json({ order: updated });
 }

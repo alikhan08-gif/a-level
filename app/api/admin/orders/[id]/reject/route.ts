@@ -9,7 +9,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const { id } = await params;
   const { reason } = (await req.json().catch(() => ({}))) as { reason?: string };
-  const order = await prisma.bookOrder.findUnique({ where: { id } });
+  const order = await prisma.bookOrder.findUnique({ where: { id }, include: { book: true } });
   if (!order) return NextResponse.json({ error: "Buyurtma topilmadi" }, { status: 404 });
 
   const updated = await prisma.bookOrder.update({
@@ -20,6 +20,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     order.phone,
     `Buyurtmangiz rad etildi.${reason ? ` Sabab: ${reason}` : ""} Savollar uchun admin bilan bog'laning.`
   );
+  if (order.userId) {
+    await prisma.notification.create({
+      data: {
+        userId: order.userId,
+        message: `"${order.book.title}" kitobiga buyurtmangiz rad etildi.${reason ? ` Sabab: ${reason}` : ""}`,
+      },
+    });
+  }
 
   return NextResponse.json({ order: updated });
 }

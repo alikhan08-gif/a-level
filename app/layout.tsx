@@ -43,7 +43,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <CartProvider>
-          <Header userFirstName={user?.firstName} locale={locale} />
+          <Header userFirstName={user?.firstName} isLoggedIn={!!userId} locale={locale} />
           <main className="flex-1">{children}</main>
           <Footer />
           <AdminHotkeyListener />
