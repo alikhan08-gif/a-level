@@ -15,20 +15,23 @@ datasource db {
 //   BookOrder.status    -> "PENDING" | "AWAITING_ADMIN" | "CONFIRMED" | "REJECTED"
 
 model User {
-  id                 String   @id @default(cuid())
-  firstName          String
-  lastName           String
-  phone              String   @unique
-  passwordHash       String
-  faceDescriptor     String?
-  faceFailedAttempts Int      @default(0)
-  locked             Boolean  @default(false)
-  createdAt          DateTime @default(now())
+  id                   String    @id @default(cuid())
+  firstName            String
+  lastName             String
+  phone                String    @unique
+  passwordHash         String
+  faceDescriptor       String?
+  faceFailedAttempts   Int       @default(0)
+  locked               Boolean   @default(false)
+  ratingPenalty        Int       @default(0)
+  lastPenaltyAppliedAt DateTime?
+  createdAt            DateTime  @default(now())
 
   enrollments   Enrollment[]
   bookOrders    BookOrder[]
   quizAttempts  QuizAttempt[]
   notifications Notification[]
+  writtenWorks  WrittenWork[]
 }
 
 model Course {
@@ -43,8 +46,9 @@ model Course {
   telegramBotLink String?
   createdAt       DateTime @default(now())
 
-  modules     Module[]
-  enrollments Enrollment[]
+  modules      Module[]
+  enrollments  Enrollment[]
+  writtenWorks WrittenWork[]
 
   @@unique([direction, subject])
 }
@@ -187,4 +191,23 @@ model Notification {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// NOTE: score is auto-graded by a simple heuristic for now (see
+// lib/rating.ts, scoreWrittenWork) — a stand-in until AI-based grading
+// (Claude API) is wired in later. status stays "GRADED" immediately since
+// grading is synchronous, but the field exists so a future async AI grader
+// can flip PENDING -> GRADED without a schema change.
+model WrittenWork {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  prompt    String
+  content   String
+  score     Int?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }

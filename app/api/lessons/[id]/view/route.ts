@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSessionUserId } from "@/lib/auth";
 import { buildLockState, LESSON_COMPLETE_VIEW_COUNT } from "@/lib/progress";
+import { resetRatingPenalty } from "@/lib/rating";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const userId = await getSessionUserId();
@@ -40,6 +41,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     create: { userId, lessonId, viewCount: nextViewCount },
     update: { viewCount: nextViewCount },
   });
+
+  await resetRatingPenalty(userId);
 
   return NextResponse.json({ progress });
 }

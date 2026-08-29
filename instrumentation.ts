@@ -7,6 +7,7 @@ export async function register() {
   const pathSpecifier = "node:path";
   const cron = await import(cronSpecifier);
   const { checkInactivityWarnings } = await import("@/lib/warnings");
+  const { checkRatingDecay } = await import("@/lib/rating");
   const { buildWeeklyReportWorkbook } = await import("@/lib/reports/weekly");
   const fs = await import(fsSpecifier);
   const path = await import(pathSpecifier);
@@ -17,6 +18,16 @@ export async function register() {
       await checkInactivityWarnings();
     } catch (err) {
       console.error("[cron] checkInactivityWarnings failed", err);
+    }
+  });
+
+  // Daily: apply a rating penalty (and notify) to anyone with no lesson
+  // activity in the last 24h. Runs a few minutes after the warnings check.
+  cron.schedule("35 0 * * *", async () => {
+    try {
+      await checkRatingDecay();
+    } catch (err) {
+      console.error("[cron] checkRatingDecay failed", err);
     }
   });
 

@@ -27,6 +27,7 @@ export default function Header({
     { href: "/", label: dict.nav.home },
     { href: "/bepul-darslar", label: dict.nav.freeLessons },
     { href: "/kurslar", label: dict.nav.courses },
+    ...(isLoggedIn ? [{ href: "/kabinet/reyting", label: dict.nav.rating }] : []),
   ];
 
   function switchLocale() {
