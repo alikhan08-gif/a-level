@@ -8,6 +8,7 @@ import { LOCALE_COOKIE } from "@/lib/i18n/constants";
 import { UzFlag, GbFlag } from "@/components/Flags";
 import { useCart } from "@/lib/cart-context";
 import NotificationBell from "@/components/NotificationBell";
+import { DIRECTIONS } from "@/lib/types";
 
 export default function Header({
   userFirstName,
@@ -51,15 +52,50 @@ export default function Header({
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-lg font-semibold text-brand-navy/80 hover:text-brand-navy transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            link.href === "/kurslar" ? (
+              <div key={link.href} className="relative group">
+                <Link
+                  href={link.href}
+                  className="flex items-center gap-1 text-lg font-semibold text-brand-navy/80 hover:text-brand-navy transition-colors"
+                >
+                  {link.label}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="transition-transform group-hover:rotate-180"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </Link>
+                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 hidden group-hover:block">
+                  <div className="w-56 rounded-2xl border border-black/10 bg-white shadow-xl overflow-hidden">
+                    {DIRECTIONS.map((direction) => (
+                      <Link
+                        key={direction}
+                        href={`/kurslar?direction=${direction}`}
+                        className="block px-4 py-3 text-sm font-semibold text-brand-navy hover:bg-black/[0.03] transition-colors"
+                      >
+                        {dict.directions[direction]}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg font-semibold text-brand-navy/80 hover:text-brand-navy transition-colors"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="flex items-center gap-1 md:gap-3">
