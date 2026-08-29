@@ -73,6 +73,31 @@ export async function computeRating(userId: string) {
   };
 }
 
+// Ranked list of every currently-enrolled student, highest rating first —
+// powers the leaderboard shown on the rating page.
+export async function getLeaderboard() {
+  const users = await prisma.user.findMany({
+    where: { enrollments: { some: { status: "ACTIVE" } } },
+    select: { id: true, firstName: true, lastName: true },
+  });
+
+  const entries = await Promise.all(
+    users.map(async (u) => {
+      const { rating, tier } = await computeRating(u.id);
+      return {
+        userId: u.id,
+        name: `${u.firstName} ${u.lastName}`.trim(),
+        rating,
+        tier,
+      };
+    })
+  );
+
+  entries.sort((a, b) => b.rating - a.rating);
+
+  return entries.map((entry, index) => ({ ...entry, rank: index + 1 }));
+}
+
 // Daily cron: any user with at least one ACTIVE enrollment who hasn't
 // watched any lesson in the last 24h gets a rating penalty + notification.
 // Watching a lesson again (see app/api/lessons/[id]/view) resets the

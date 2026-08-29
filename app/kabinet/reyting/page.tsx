@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/auth";
-import { computeRating, type RatingTier } from "@/lib/rating";
+import { computeRating, getLeaderboard, type RatingTier } from "@/lib/rating";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -34,7 +34,7 @@ export default async function RatingPage() {
   const userId = await getSessionUserId();
   if (!userId) redirect("/kirish");
 
-  const [locale, rating] = await Promise.all([getLocale(), computeRating(userId)]);
+  const [locale, rating, leaderboard] = await Promise.all([getLocale(), computeRating(userId), getLeaderboard()]);
   const dict = getDictionary(locale);
   const colors = TIER_COLORS[rating.tier];
 
@@ -77,6 +77,39 @@ export default async function RatingPage() {
         >
           {dict.rating.writtenWorkTitle} &rarr;
         </Link>
+
+        <h2 className="text-lg font-bold text-brand-navy text-center mt-12 mb-4">
+          {dict.rating.leaderboardTitle}
+        </h2>
+        {leaderboard.length === 0 ? (
+          <p className="text-brand-navy/50 text-sm text-center">{dict.rating.leaderboardEmpty}</p>
+        ) : (
+          <div className="rounded-[28px] border border-black/10 bg-white overflow-hidden divide-y divide-black/5">
+            {leaderboard.map((entry) => {
+              const isYou = entry.userId === userId;
+              const entryColors = TIER_COLORS[entry.tier];
+              return (
+                <div
+                  key={entry.userId}
+                  className={`flex items-center gap-4 px-5 py-3.5 ${isYou ? "bg-brand-gold/[0.06]" : ""}`}
+                >
+                  <span className="w-7 shrink-0 text-center text-sm font-bold text-brand-navy/40">
+                    {entry.rank}
+                  </span>
+                  <span className="flex-1 text-sm font-semibold text-brand-navy truncate">
+                    {entry.name}
+                    {isYou && (
+                      <span className="ml-2 text-xs font-bold text-brand-gold uppercase tracking-wide">
+                        {dict.rating.leaderboardYou}
+                      </span>
+                    )}
+                  </span>
+                  <span className={`text-sm font-extrabold ${entryColors.text}`}>{entry.rating}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

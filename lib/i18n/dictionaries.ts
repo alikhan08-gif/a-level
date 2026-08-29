@@ -149,6 +149,9 @@ export const dictionaries = {
       writtenWorkHistory: "Oldingi ishlar",
       writtenWorkNone: "Hali yozma ish topshirilmagan",
       writtenWorkFillAll: "Kurs, topshiriq va javobni to'ldiring",
+      leaderboardTitle: "Ta'lim olayotgan o'quvchilar",
+      leaderboardYou: "Siz",
+      leaderboardEmpty: "Hali reytingda hech kim yo'q",
     },
     bookOrder: {
       orderTitle: "Buyurtma berish",
@@ -393,6 +396,9 @@ export const dictionaries = {
       writtenWorkHistory: "Past submissions",
       writtenWorkNone: "No written work submitted yet",
       writtenWorkFillAll: "Fill in the course, assignment, and answer",
+      leaderboardTitle: "Students in training",
+      leaderboardYou: "You",
+      leaderboardEmpty: "No one is on the leaderboard yet",
     },
     bookOrder: {
       orderTitle: "Place an order",
