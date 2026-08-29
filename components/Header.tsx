@@ -51,13 +51,13 @@ export default function Header({
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) =>
             link.href === "/kurslar" ? (
               <div key={link.href} className="relative group">
                 <Link
                   href={link.href}
-                  className="flex items-center gap-1 text-lg font-semibold text-brand-navy/80 hover:text-brand-navy transition-colors"
+                  className="flex items-center gap-1 rounded-full border border-transparent px-4 py-2 text-lg font-semibold text-brand-navy/80 transition-all duration-300 hover:border-brand-gold/60 hover:bg-brand-gold/[0.06] hover:text-brand-navy"
                 >
                   {link.label}
                   <svg
@@ -90,7 +90,7 @@ export default function Header({
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-lg font-semibold text-brand-navy/80 hover:text-brand-navy transition-colors"
+                className="rounded-full border border-transparent px-4 py-2 text-lg font-semibold text-brand-navy/80 transition-all duration-300 hover:border-brand-gold/60 hover:bg-brand-gold/[0.06] hover:text-brand-navy"
               >
                 {link.label}
               </Link>
