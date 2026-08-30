@@ -16,7 +16,7 @@ export default async function AdminCohortsPage() {
   const [locale, cohorts] = await Promise.all([
     getLocale(),
     prisma.cohort.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
       include: {
         users: { select: { id: true, firstName: true, lastName: true, phone: true }, orderBy: { createdAt: "asc" } },
       },

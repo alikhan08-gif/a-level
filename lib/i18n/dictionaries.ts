@@ -262,6 +262,8 @@ export const dictionaries = {
       cohortMoveButton: "Ko'chirish",
       cohortMoveTo: "Boshqa patokka o'tkazish",
       cohortNoStudents: "Bu patokda o'quvchi yo'q",
+      cohortViewButton: "Ko'rish",
+      cohortPageSizeLabel: "Ko'rsatish soni",
     },
   },
   en: {
@@ -523,6 +525,8 @@ export const dictionaries = {
       cohortMoveButton: "Move",
       cohortMoveTo: "Move to another cohort",
       cohortNoStudents: "No students in this cohort",
+      cohortViewButton: "View",
+      cohortPageSizeLabel: "Show count",
     },
   },
 } as const;
