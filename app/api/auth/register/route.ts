@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword, signUserToken, AUTH_COOKIES } from "@/lib/auth";
+import { ensureOpenCohort } from "@/lib/cohort";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
   }
 
   const passwordHash = await hashPassword(password);
+  const cohort = await ensureOpenCohort();
   const user = await prisma.user.create({
     data: {
       firstName: firstName.trim(),
@@ -35,6 +37,7 @@ export async function POST(req: Request) {
       phone: phone.trim(),
       passwordHash,
       faceDescriptor: JSON.stringify(faceDescriptor),
+      cohortId: cohort.id,
     },
   });
 

@@ -19,6 +19,9 @@ export const SUBJECT_LABELS: Record<Subject, string> = {
 export const ENROLLMENT_STATUSES = ["ACTIVE", "EXPELLED"] as const;
 export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
 
+export const COHORT_STATUSES = ["OPEN", "CLOSED"] as const;
+export type CohortStatus = (typeof COHORT_STATUSES)[number];
+
 export const ORDER_STATUSES = ["PENDING", "AWAITING_ADMIN", "CONFIRMED", "REJECTED"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 

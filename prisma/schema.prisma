@@ -25,13 +25,27 @@ model User {
   locked               Boolean   @default(false)
   ratingPenalty        Int       @default(0)
   lastPenaltyAppliedAt DateTime?
+  cohortId             String?
   createdAt            DateTime  @default(now())
 
+  cohort        Cohort?         @relation(fields: [cohortId], references: [id])
   enrollments   Enrollment[]
   bookOrders    BookOrder[]
   quizAttempts  QuizAttempt[]
   notifications Notification[]
   writtenWorks  WrittenWork[]
+}
+
+// Cohort.status -> "OPEN" | "CLOSED" (see lib/types.ts CohortStatus).
+// Only one cohort should be OPEN at a time — opening one closes the rest
+// (enforced in lib/cohort.ts, not at the DB level).
+model Cohort {
+  id        String   @id @default(cuid())
+  name      String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+
+  users User[]
 }
 
 model Course {

@@ -39,6 +39,9 @@ export default async function AdminDashboardPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-brand-navy">{dict.admin.panelTitle}</h1>
           <div className="flex items-center gap-3">
+            <Link href="/admin/patoklar" className="text-sm font-semibold text-brand-navy hover:underline">
+              {dict.admin.cohorts}
+            </Link>
             <Link href="/admin/hisobotlar" className="text-sm font-semibold text-brand-navy hover:underline">
               {dict.admin.reports}
             </Link>
