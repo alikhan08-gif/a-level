@@ -44,9 +44,12 @@ export default function DeliveryMethodButton({
       disabled={disabled}
       onClick={onClick}
       style={{ ["--provider-color" as string]: color }}
-      className="group flex flex-col items-center gap-2.5 rounded-xl border-2 border-black/10 py-5 hover:border-[var(--provider-color)] hover:bg-[var(--provider-color)]/5 transition-colors disabled:opacity-50"
+      className="group flex flex-col items-center gap-2.5 rounded-xl border-2 border-black/10 py-5 transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-[1.03] hover:border-[var(--provider-color)] hover:bg-[var(--provider-color)]/5 hover:shadow-lg disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: color }}>
+      <div
+        className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform duration-200 ease-out group-hover:scale-110"
+        style={{ backgroundColor: color }}
+      >
         {icon}
       </div>
       <span className="font-bold text-brand-navy">{label}</span>
