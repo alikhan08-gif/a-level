@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
+import { DELIVERY_METHOD_LABELS, type DeliveryMethod } from "@/lib/types";
 
 type Order = {
   id: string;
@@ -13,6 +14,7 @@ type Order = {
   phone: string;
   address: string;
   receiptRef: string | null;
+  deliveryMethod: string | null;
   createdAt: string | Date;
   book: { title: string; price: number };
 };
@@ -81,6 +83,11 @@ export default function AdminOrdersPanel({ orders, locale }: { orders: Order[]; 
                 <h3 className="font-bold text-brand-navy">{first.name}</h3>
                 <p className="text-sm text-brand-navy/70">{first.phone}</p>
                 <p className="text-sm text-brand-navy/70">{first.address}</p>
+                {first.deliveryMethod && (
+                  <p className="text-xs font-semibold text-brand-navy/50 mt-0.5">
+                    {DELIVERY_METHOD_LABELS[first.deliveryMethod as DeliveryMethod] ?? first.deliveryMethod}
+                  </p>
+                )}
                 <div className="text-sm text-brand-navy/60 mt-1 space-y-0.5">
                   {group.map((o) => (
                     <p key={o.id}>

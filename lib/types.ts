@@ -22,6 +22,14 @@ export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
 export const COHORT_STATUSES = ["OPEN", "CLOSED"] as const;
 export type CohortStatus = (typeof COHORT_STATUSES)[number];
 
+export const DELIVERY_METHODS = ["UZPOST", "BTS"] as const;
+export type DeliveryMethod = (typeof DELIVERY_METHODS)[number];
+
+export const DELIVERY_METHOD_LABELS: Record<DeliveryMethod, string> = {
+  UZPOST: "UzPost",
+  BTS: "BTS",
+};
+
 export const ORDER_STATUSES = [
   "PENDING",
   "AWAITING_ADMIN",

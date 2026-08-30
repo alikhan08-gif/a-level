@@ -13,6 +13,7 @@ datasource db {
 //   Course.subject      -> "KIMYO" | "BIOLOGIYA" | "MATH"
 //   Enrollment.status   -> "ACTIVE" | "RESET" | "EXPELLED"
 //   BookOrder.status    -> "PENDING" | "AWAITING_ADMIN" | "CONFIRMED" | "DELIVERING" | "DELIVERED" | "REJECTED"
+//   BookOrder.deliveryMethod -> "UZPOST" | "BTS"
 
 model User {
   id                   String    @id @default(cuid())
@@ -167,18 +168,19 @@ model Book {
 }
 
 model BookOrder {
-  id           String   @id @default(cuid())
-  bookId       String
-  userId       String?
-  groupId      String?
-  quantity     Int      @default(1)
-  name         String
-  phone        String
-  address      String
-  status       String   @default("PENDING")
-  receiptRef   String?
-  rejectReason String?
-  createdAt    DateTime @default(now())
+  id             String   @id @default(cuid())
+  bookId         String
+  userId         String?
+  groupId        String?
+  quantity       Int      @default(1)
+  name           String
+  phone          String
+  address        String
+  status         String   @default("PENDING")
+  deliveryMethod String?
+  receiptRef     String?
+  rejectReason   String?
+  createdAt      DateTime @default(now())
 
   book Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
   user User? @relation(fields: [userId], references: [id])

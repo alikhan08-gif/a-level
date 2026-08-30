@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import PaymentMethodButton from "@/components/PaymentMethodButton";
+import DeliveryMethodButton from "@/components/DeliveryMethodButton";
+import type { DeliveryMethod } from "@/lib/types";
 
-type Step = "form" | "payment" | "receipt" | "submitted";
+type Step = "form" | "delivery" | "payment" | "receipt" | "submitted";
 
 type Receipt = {
   receiptRef: string;
@@ -33,6 +35,7 @@ export default function BookOrderFlow({
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,6 +44,11 @@ export default function BookOrderFlow({
       setError(dict.bookOrder.fillAllFields);
       return;
     }
+    setStep("delivery");
+  }
+
+  function handleChooseDelivery(method: DeliveryMethod) {
+    setDeliveryMethod(method);
     setStep("payment");
   }
 
@@ -51,7 +59,7 @@ export default function BookOrderFlow({
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookId, name, phone, address, provider }),
+        body: JSON.stringify({ bookId, name, phone, address, provider, deliveryMethod }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? dict.bookOrder.genericError);
@@ -127,6 +135,19 @@ export default function BookOrderFlow({
         </form>
       )}
 
+      {step === "delivery" && (
+        <div className="space-y-4">
+          <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.chooseDelivery}</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <DeliveryMethodButton method="UZPOST" onClick={() => handleChooseDelivery("UZPOST")} />
+            <DeliveryMethodButton method="BTS" onClick={() => handleChooseDelivery("BTS")} />
+          </div>
+          <button type="button" onClick={() => setStep("form")} className="text-sm text-brand-navy/60 hover:underline">
+            &larr; {dict.bookOrder.back}
+          </button>
+        </div>
+      )}
+
       {step === "payment" && (
         <div className="space-y-4">
           <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.choosePayment}</h2>
@@ -140,7 +161,7 @@ export default function BookOrderFlow({
           {loading && <p className="text-sm text-brand-navy/50">{dict.bookOrder.payInProgress}</p>}
           <button
             type="button"
-            onClick={() => setStep("form")}
+            onClick={() => setStep("delivery")}
             className="text-sm text-brand-navy/60 hover:underline"
           >
             &larr; {dict.bookOrder.back}

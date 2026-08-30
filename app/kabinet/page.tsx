@@ -22,14 +22,22 @@ export default async function KabinetPage() {
   return (
     <div className="bg-black/[0.015] min-h-[70vh]">
       <div className="mx-auto max-w-4xl px-4 py-12">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="h-14 w-14 shrink-0 rounded-full bg-brand-navy/10 flex items-center justify-center text-lg font-bold text-brand-navy">
-            {user?.firstName?.[0] ?? "?"}
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 shrink-0 rounded-full bg-brand-navy/10 flex items-center justify-center text-lg font-bold text-brand-navy">
+              {user?.firstName?.[0] ?? "?"}
+            </div>
+            <div>
+              <p className="text-sm text-brand-navy/50">{dict.kabinet.myCourses}</p>
+              <h1 className="text-2xl font-bold text-brand-navy">{user?.firstName}</h1>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-brand-navy/50">{dict.kabinet.myCourses}</p>
-            <h1 className="text-2xl font-bold text-brand-navy">{user?.firstName}</h1>
-          </div>
+          <Link
+            href="/kabinet/buyurtmalar"
+            className="shrink-0 rounded-full border border-black/15 px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-navy/30 transition-colors"
+          >
+            {dict.kabinet.myOrders}
+          </Link>
         </div>
 
         {enrollments.length === 0 ? (

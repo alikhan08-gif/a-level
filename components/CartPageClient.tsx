@@ -7,8 +7,10 @@ import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
 import { getSubjectStyle } from "@/lib/subjectStyle";
 import PaymentMethodButton from "@/components/PaymentMethodButton";
+import DeliveryMethodButton from "@/components/DeliveryMethodButton";
+import type { DeliveryMethod } from "@/lib/types";
 
-type Step = "cart" | "form" | "payment" | "receipt" | "submitted";
+type Step = "cart" | "form" | "delivery" | "payment" | "receipt" | "submitted";
 
 type Receipt = {
   receiptRef: string;
@@ -29,6 +31,7 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
   const [loading, setLoading] = useState(false);
   const [groupId, setGroupId] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +40,11 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
       setError(dict.bookOrder.fillAllFields);
       return;
     }
+    setStep("delivery");
+  }
+
+  function handleChooseDelivery(method: DeliveryMethod) {
+    setDeliveryMethod(method);
     setStep("payment");
   }
 
@@ -53,6 +61,7 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
           phone,
           address,
           provider,
+          deliveryMethod,
         }),
       });
       const data = await res.json();
@@ -230,6 +239,19 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
           </form>
         )}
 
+        {step === "delivery" && (
+          <div className="space-y-4">
+            <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.chooseDelivery}</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <DeliveryMethodButton method="UZPOST" onClick={() => handleChooseDelivery("UZPOST")} />
+              <DeliveryMethodButton method="BTS" onClick={() => handleChooseDelivery("BTS")} />
+            </div>
+            <button type="button" onClick={() => setStep("form")} className="text-sm text-brand-navy/60 hover:underline">
+              &larr; {dict.bookOrder.back}
+            </button>
+          </div>
+        )}
+
         {step === "payment" && (
           <div className="space-y-4">
             <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.choosePayment}</h2>
@@ -241,7 +263,7 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
               <PaymentMethodButton provider="payme" disabled={loading} onClick={() => handlePay("payme")} />
             </div>
             {loading && <p className="text-sm text-brand-navy/50">{dict.bookOrder.payInProgress}</p>}
-            <button type="button" onClick={() => setStep("form")} className="text-sm text-brand-navy/60 hover:underline">
+            <button type="button" onClick={() => setStep("delivery")} className="text-sm text-brand-navy/60 hover:underline">
               &larr; {dict.bookOrder.back}
             </button>
           </div>

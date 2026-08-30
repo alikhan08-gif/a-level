@@ -2,19 +2,25 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db";
 import { mockPaymentProvider } from "@/lib/payments/mock";
+import { getSessionUserId } from "@/lib/auth";
+import { DELIVERY_METHODS, type DeliveryMethod } from "@/lib/types";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { items, name, phone, address, provider } = body as {
+  const { items, name, phone, address, provider, deliveryMethod } = body as {
     items: { bookId: string; quantity: number }[];
     name: string;
     phone: string;
     address: string;
     provider: "click" | "payme";
+    deliveryMethod?: DeliveryMethod;
   };
 
   if (!items?.length || !name || !phone || !address || !provider) {
     return NextResponse.json({ error: "Barcha maydonlarni to'ldiring" }, { status: 400 });
+  }
+  if (deliveryMethod && !DELIVERY_METHODS.includes(deliveryMethod)) {
+    return NextResponse.json({ error: "Yetkazib berish usuli noto'g'ri" }, { status: 400 });
   }
 
   const books = await prisma.book.findMany({ where: { id: { in: items.map((i) => i.bookId) } } });
@@ -25,6 +31,7 @@ export async function POST(req: Request) {
 
   const groupId = randomUUID();
   const totalAmount = items.reduce((sum, item) => sum + (bookById.get(item.bookId)?.price ?? 0) * item.quantity, 0);
+  const userId = await getSessionUserId();
 
   await prisma.bookOrder.createMany({
     data: items.map((item) => ({
@@ -35,6 +42,8 @@ export async function POST(req: Request) {
       phone,
       address,
       status: "PENDING",
+      deliveryMethod,
+      userId: userId ?? undefined,
     })),
   });
 
