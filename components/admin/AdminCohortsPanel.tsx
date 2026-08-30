@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDictionary, formatTemplate, type Locale } from "@/lib/i18n/dictionaries";
 
 type CohortUser = { id: string; firstName: string; lastName: string; phone: string };
 type Cohort = { id: string; name: string; status: "OPEN" | "CLOSED"; createdAt: string; users: CohortUser[] };
 
-const PAGE_SIZE_OPTIONS = [5, 20, 50, 80, 100];
+const PAGE_SIZE_OPTIONS = [20, 50, 100];
 
 function LockIcon({ locked }: { locked: boolean }) {
   return (
@@ -18,12 +18,113 @@ function LockIcon({ locked }: { locked: boolean }) {
   );
 }
 
+function PencilIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}
+
+// A number field that shows the current value and, on click, drops a list
+// of preset options below it — while still letting the admin type any
+// custom number directly (a plain <select> can't do the latter, a native
+// <input list> datalist doesn't reliably drop down on click).
+function PageSizeCombobox({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState(String(value));
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setText(String(value)), [value]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function commit(raw: string) {
+    const n = Math.max(1, Number(raw) || 1);
+    onChange(n);
+    setText(String(n));
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <div className="flex items-center gap-1 rounded-lg border border-black/15 pl-2.5 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-brand-navy/30">
+        <input
+          type="number"
+          min={1}
+          value={text}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={(e) => commit(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              commit(text);
+              setOpen(false);
+            }
+          }}
+          className="w-14 bg-transparent text-sm focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label="Variantlar"
+          className="flex h-5 w-5 shrink-0 items-center justify-center text-brand-navy/50 hover:text-brand-navy"
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            className={`transition-transform ${open ? "rotate-180" : ""}`}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      </div>
+      {open && (
+        <div className="absolute left-0 top-full z-10 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-white shadow-lg">
+          {PAGE_SIZE_OPTIONS.map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => {
+                commit(String(n));
+                setOpen(false);
+              }}
+              className="block w-full px-3 py-1.5 text-left text-sm text-brand-navy hover:bg-black/[0.03]"
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminCohortsPanel({ cohorts, locale }: { cohorts: Cohort[]; locale: Locale }) {
   const dict = getDictionary(locale);
   const router = useRouter();
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [renameDrafts, setRenameDrafts] = useState<Record<string, string>>({});
   const [moveTargets, setMoveTargets] = useState<Record<string, string>>({});
   const [viewCohortId, setViewCohortId] = useState<string | null>(null);
@@ -61,7 +162,8 @@ export default function AdminCohortsPanel({ cohorts, locale }: { cohorts: Cohort
   }
 
   async function handleRename(cohort: Cohort) {
-    const name = renameDrafts[cohort.id]?.trim();
+    const name = (renameDrafts[cohort.id] ?? cohort.name).trim();
+    setEditingId(null);
     if (!name || name === cohort.name) return;
     setBusyId(cohort.id);
     try {
@@ -104,19 +206,38 @@ export default function AdminCohortsPanel({ cohorts, locale }: { cohorts: Cohort
       <div className="space-y-3">
         {cohorts.map((cohort) => (
           <div key={cohort.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-black/10 bg-white px-5 py-4">
-            <input
-              defaultValue={cohort.name}
-              onChange={(e) => setRenameDrafts((prev) => ({ ...prev, [cohort.id]: e.target.value }))}
-              className="min-w-[140px] flex-1 border-0 border-b border-transparent bg-transparent px-0 py-1 text-sm font-semibold text-brand-navy focus:outline-none focus:border-black/15"
-            />
-            <button
-              type="button"
-              disabled={busyId === cohort.id}
-              onClick={() => handleRename(cohort)}
-              className="rounded-full border border-black/15 px-3 py-1.5 text-xs font-semibold text-brand-navy hover:border-brand-navy/30 disabled:opacity-50"
-            >
-              {dict.admin.cohortRenameButton}
-            </button>
+            {editingId === cohort.id ? (
+              <>
+                <input
+                  autoFocus
+                  defaultValue={cohort.name}
+                  onChange={(e) => setRenameDrafts((prev) => ({ ...prev, [cohort.id]: e.target.value }))}
+                  onKeyDown={(e) => e.key === "Enter" && handleRename(cohort)}
+                  className="min-w-[140px] flex-1 border-0 border-b border-black/15 bg-transparent px-0 py-1 text-sm font-semibold text-brand-navy focus:outline-none"
+                />
+                <button
+                  type="button"
+                  disabled={busyId === cohort.id}
+                  onClick={() => handleRename(cohort)}
+                  aria-label={dict.admin.cohortRenameButton}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-green-600 hover:bg-green-50 disabled:opacity-50"
+                >
+                  <CheckIcon />
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="min-w-[140px] flex-1 text-sm font-semibold text-brand-navy">{cohort.name}</span>
+                <button
+                  type="button"
+                  onClick={() => setEditingId(cohort.id)}
+                  aria-label={dict.admin.cohortRenameButton}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-brand-navy/40 hover:bg-black/5 hover:text-brand-navy"
+                >
+                  <PencilIcon />
+                </button>
+              </>
+            )}
 
             <button
               type="button"
@@ -189,23 +310,8 @@ export default function AdminCohortsPanel({ cohorts, locale }: { cohorts: Cohort
             </div>
 
             <div className="flex items-center gap-2 mb-4">
-              <label htmlFor="cohort-page-size" className="text-xs font-semibold text-brand-navy/60">
-                {dict.admin.cohortPageSizeLabel}
-              </label>
-              <input
-                id="cohort-page-size"
-                type="number"
-                min={1}
-                list="cohort-page-size-options"
-                value={pageSize}
-                onChange={(e) => setPageSize(Math.max(1, Number(e.target.value) || 1))}
-                className="w-24 rounded-lg border border-black/15 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy/30"
-              />
-              <datalist id="cohort-page-size-options">
-                {PAGE_SIZE_OPTIONS.map((n) => (
-                  <option key={n} value={n} />
-                ))}
-              </datalist>
+              <label className="text-xs font-semibold text-brand-navy/60">{dict.admin.cohortPageSizeLabel}</label>
+              <PageSizeCombobox value={pageSize} onChange={setPageSize} />
             </div>
 
             {viewCohort.users.length === 0 ? (
