@@ -27,10 +27,12 @@ const METHODS: Record<DeliveryMethod, { label: string; color: string; icon: Reac
 
 export default function DeliveryMethodButton({
   method,
+  subtitle,
   disabled,
   onClick,
 }: {
   method: DeliveryMethod;
+  subtitle?: string;
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -48,6 +50,7 @@ export default function DeliveryMethodButton({
         {icon}
       </div>
       <span className="font-bold text-brand-navy">{label}</span>
+      {subtitle && <span className="text-xs text-brand-navy/50">{subtitle}</span>}
     </button>
   );
 }

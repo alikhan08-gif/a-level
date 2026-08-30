@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
-import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
+import { getDictionary, formatTemplate, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
 import { getSubjectStyle } from "@/lib/subjectStyle";
 import PaymentMethodButton from "@/components/PaymentMethodButton";
 import DeliveryMethodButton from "@/components/DeliveryMethodButton";
-import type { DeliveryMethod } from "@/lib/types";
+import { DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
 
 type Step = "cart" | "form" | "delivery" | "payment" | "receipt" | "submitted";
 
@@ -243,8 +243,16 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
           <div className="space-y-4">
             <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.chooseDelivery}</h2>
             <div className="grid grid-cols-2 gap-3">
-              <DeliveryMethodButton method="UZPOST" onClick={() => handleChooseDelivery("UZPOST")} />
-              <DeliveryMethodButton method="BTS" onClick={() => handleChooseDelivery("BTS")} />
+              <DeliveryMethodButton
+                method="UZPOST"
+                subtitle={formatTemplate(dict.bookOrder.deliveryFeeUpfront, { amount: formatPrice(DELIVERY_FEES.UZPOST) })}
+                onClick={() => handleChooseDelivery("UZPOST")}
+              />
+              <DeliveryMethodButton
+                method="BTS"
+                subtitle={dict.bookOrder.deliveryFeeOnDelivery}
+                onClick={() => handleChooseDelivery("BTS")}
+              />
             </div>
             <button type="button" onClick={() => setStep("form")} className="text-sm text-brand-navy/60 hover:underline">
               &larr; {dict.bookOrder.back}
@@ -256,7 +264,8 @@ export default function CartPageClient({ locale }: { locale: Locale }) {
           <div className="space-y-4">
             <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.choosePayment}</h2>
             <p className="text-sm text-brand-navy/60">
-              {dict.cart.total}: {formatPrice(totalPrice)} {dict.kitoblar.currency}
+              {dict.cart.total}: {formatPrice(totalPrice + (deliveryMethod ? DELIVERY_FEES[deliveryMethod] : 0))}{" "}
+              {dict.kitoblar.currency}
             </p>
             <div className="grid grid-cols-2 gap-3">
               <PaymentMethodButton provider="click" disabled={loading} onClick={() => handlePay("click")} />

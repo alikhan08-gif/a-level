@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { mockPaymentProvider } from "@/lib/payments/mock";
 import { getSessionUserId } from "@/lib/auth";
-import { DELIVERY_METHODS, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_METHODS, DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -32,8 +32,9 @@ export async function POST(req: Request) {
     data: { bookId, name, phone, address, status: "PENDING", deliveryMethod, userId: userId ?? undefined },
   });
 
+  const deliveryFee = deliveryMethod ? DELIVERY_FEES[deliveryMethod] : 0;
   const receipt = await mockPaymentProvider.charge({
-    amount: book.price,
+    amount: book.price + deliveryFee,
     orderId: order.id,
     provider,
   });

@@ -12,13 +12,18 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (!order) return NextResponse.json({ error: "Buyurtma topilmadi" }, { status: 404 });
 
   const updated = await prisma.bookOrder.update({ where: { id }, data: { status: "CONFIRMED" } });
-  await mockSmsProvider.send(
-    order.phone,
-    `Buyurtmangiz qabul qilindi. Uni 24-72 soat ichida "UzPost" orqali yetkazamiz. Diqqat-e'tiborli bo'ling.`
-  );
+
+  // BTS collects its fee as cash on delivery, so the buyer needs to know
+  // that up front; UzPost's fee is already paid, so no such reminder.
+  const deliveryNote =
+    order.deliveryMethod === "BTS"
+      ? ` Buyurtma yetib borganda pochta xizmati pulini to'lash orqali qabul qilib olishingiz mumkin.`
+      : ` Uni 24-72 soat ichida "UzPost" orqali yetkazamiz. Diqqat-e'tiborli bo'ling.`;
+
+  await mockSmsProvider.send(order.phone, `Buyurtmangiz qabul qilindi.${deliveryNote}`);
   if (order.userId) {
     await prisma.notification.create({
-      data: { userId: order.userId, message: `"${order.book.title}" kitobiga buyurtmangiz tasdiqlandi.` },
+      data: { userId: order.userId, message: `"${order.book.title}" kitobiga buyurtmangiz tasdiqlandi.${deliveryNote}` },
     });
   }
 

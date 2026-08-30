@@ -30,6 +30,13 @@ export const DELIVERY_METHOD_LABELS: Record<DeliveryMethod, string> = {
   BTS: "BTS",
 };
 
+// UzPost's fee is charged upfront, added to the order total at checkout.
+// BTS collects its fee as cash on delivery instead, so no upfront charge.
+export const DELIVERY_FEES: Record<DeliveryMethod, number> = {
+  UZPOST: 15000,
+  BTS: 0,
+};
+
 export const ORDER_STATUSES = ["PENDING", "AWAITING_ADMIN", "CONFIRMED", "REJECTED"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 

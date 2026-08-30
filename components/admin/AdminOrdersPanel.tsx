@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
-import { DELIVERY_METHOD_LABELS, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_METHOD_LABELS, DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
 
 type Order = {
   id: string;
@@ -75,7 +75,9 @@ export default function AdminOrdersPanel({ orders, locale }: { orders: Order[]; 
       {groups.map((group) => {
         const first = group[0];
         const ids = group.map((o) => o.id);
-        const total = group.reduce((sum, o) => sum + o.book.price * o.quantity, 0);
+        const booksTotal = group.reduce((sum, o) => sum + o.book.price * o.quantity, 0);
+        const deliveryFee = first.deliveryMethod ? DELIVERY_FEES[first.deliveryMethod as DeliveryMethod] ?? 0 : 0;
+        const total = booksTotal + deliveryFee;
         return (
           <div key={first.id} className="rounded-2xl border border-black/10 bg-white p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -94,7 +96,12 @@ export default function AdminOrdersPanel({ orders, locale }: { orders: Order[]; 
                       {o.book.title} — {o.quantity} ta — {formatPrice(o.book.price * o.quantity)} {dict.kitoblar.currency}
                     </p>
                   ))}
-                  {group.length > 1 && (
+                  {deliveryFee > 0 && (
+                    <p>
+                      {dict.bookOrder.deliveryMethod} — {formatPrice(deliveryFee)} {dict.kitoblar.currency}
+                    </p>
+                  )}
+                  {(group.length > 1 || deliveryFee > 0) && (
                     <p className="font-semibold text-brand-navy">
                       {dict.cart.total}: {formatPrice(total)} {dict.kitoblar.currency}
                     </p>
