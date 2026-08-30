@@ -36,20 +36,43 @@ export default async function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-black/[0.02]">
       <div className="mx-auto max-w-5xl px-4 py-10 space-y-10">
-        <div className="flex items-center justify-between">
+        <div className="space-y-4">
           <h1 className="text-2xl font-bold text-brand-navy">{dict.admin.panelTitle}</h1>
-          <div className="flex items-center gap-3">
-            <Link href="/admin/patoklar" className="text-sm font-semibold text-brand-navy hover:underline">
+          <nav className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/admin/patoklar"
+              className="flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-navy/30 hover:bg-black/[0.02] transition-colors"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
               {dict.admin.cohorts}
             </Link>
-            <Link href="/admin/reyting" className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link
+              href="/admin/reyting"
+              className="flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-navy/30 hover:bg-black/[0.02] transition-colors"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 3v18h18" />
+                <path d="M18 17V9M13 17V5M8 17v-4" />
+              </svg>
               {dict.admin.ratingLink}
             </Link>
-            <Link href="/admin/hisobotlar" className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link
+              href="/admin/hisobotlar"
+              className="flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-navy/30 hover:bg-black/[0.02] transition-colors"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+                <path d="M14 2v6h6" />
+              </svg>
               {dict.admin.reports}
             </Link>
             <AdminWarningsButton locale={locale} />
-          </div>
+          </nav>
         </div>
 
         <section>

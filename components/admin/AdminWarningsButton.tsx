@@ -22,15 +22,19 @@ export default function AdminWarningsButton({ locale }: { locale: Locale }) {
 
   return (
     <div className="flex items-center gap-2">
-      {result && <span className="text-xs text-brand-navy/50">{result}</span>}
       <button
         type="button"
         onClick={handleRun}
         disabled={loading}
-        className="text-sm font-semibold text-brand-navy hover:underline disabled:opacity-50"
+        className="flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-brand-navy hover:border-brand-navy/30 hover:bg-black/[0.02] transition-colors disabled:opacity-50"
       >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
         {loading ? dict.admin.checking : dict.admin.checkInactivity}
       </button>
+      {result && <span className="text-xs text-brand-navy/50">{result}</span>}
     </div>
   );
 }
