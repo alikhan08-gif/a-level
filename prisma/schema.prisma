@@ -12,7 +12,7 @@ datasource db {
 //   Course.direction   -> "A_LEVEL" | "MILLIY_SERTIFIKAT" | "ATTESTATSIYA"
 //   Course.subject      -> "KIMYO" | "BIOLOGIYA" | "MATH"
 //   Enrollment.status   -> "ACTIVE" | "RESET" | "EXPELLED"
-//   BookOrder.status    -> "PENDING" | "AWAITING_ADMIN" | "CONFIRMED" | "DELIVERING" | "DELIVERED" | "REJECTED"
+//   BookOrder.status    -> "PENDING" | "AWAITING_ADMIN" | "CONFIRMED" | "REJECTED"
 //   BookOrder.deliveryMethod -> "UZPOST" | "BTS"
 
 model User {

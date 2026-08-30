@@ -11,9 +11,7 @@ export const metadata = { title: "Buyurtmalarim — Harrington Academy" };
 const STATUS_COLORS: Record<OrderStatus, string> = {
   PENDING: "bg-black/5 text-brand-navy/50",
   AWAITING_ADMIN: "bg-amber-100 text-amber-700",
-  CONFIRMED: "bg-sky-100 text-sky-700",
-  DELIVERING: "bg-amber-100 text-amber-700",
-  DELIVERED: "bg-green-100 text-green-700",
+  CONFIRMED: "bg-green-100 text-green-700",
   REJECTED: "bg-red-100 text-red-700",
 };
 
@@ -35,8 +33,6 @@ export default async function MyOrdersPage() {
     PENDING: dict.kabinet.orderStatusPending,
     AWAITING_ADMIN: dict.kabinet.orderStatusAwaitingAdmin,
     CONFIRMED: dict.kabinet.orderStatusConfirmed,
-    DELIVERING: dict.kabinet.orderStatusDelivering,
-    DELIVERED: dict.kabinet.orderStatusDelivered,
     REJECTED: dict.kabinet.orderStatusRejected,
   };
 
