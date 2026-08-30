@@ -22,6 +22,9 @@ export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
 export const COHORT_STATUSES = ["OPEN", "CLOSED"] as const;
 export type CohortStatus = (typeof COHORT_STATUSES)[number];
 
+export const PAYMENT_PROVIDERS = ["click", "payme", "uzum", "paynet"] as const;
+export type PaymentProviderId = (typeof PAYMENT_PROVIDERS)[number];
+
 export const DELIVERY_METHODS = ["UZPOST", "BTS"] as const;
 export type DeliveryMethod = (typeof DELIVERY_METHODS)[number];
 

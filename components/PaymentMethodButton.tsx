@@ -1,4 +1,6 @@
-const PROVIDERS = {
+import type { PaymentProviderId } from "@/lib/types";
+
+const PROVIDERS: Record<PaymentProviderId, { label: string; color: string; icon: React.ReactNode }> = {
   click: {
     label: "Click",
     color: "#0093D6",
@@ -19,14 +21,36 @@ const PROVIDERS = {
       </svg>
     ),
   },
-} as const;
+  uzum: {
+    label: "Uzum",
+    color: "#7C3AED",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4v9a4 4 0 0 0 8 0V4" />
+        <path d="M20 4v9a4 4 0 0 1-8 0" />
+      </svg>
+    ),
+  },
+  paynet: {
+    label: "Paynet",
+    color: "#F5821F",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="5" cy="12" r="2.2" fill="white" stroke="none" />
+        <circle cx="19" cy="6" r="2.2" fill="white" stroke="none" />
+        <circle cx="19" cy="18" r="2.2" fill="white" stroke="none" />
+        <path d="M7 12h10M8.5 10.5 17 6.8M8.5 13.5 17 17.2" />
+      </svg>
+    ),
+  },
+};
 
 export default function PaymentMethodButton({
   provider,
   disabled,
   onClick,
 }: {
-  provider: "click" | "payme";
+  provider: PaymentProviderId;
   disabled?: boolean;
   onClick: () => void;
 }) {

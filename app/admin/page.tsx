@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSessionAdminId } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import AdminOrdersPanel from "@/components/admin/AdminOrdersPanel";
+import AdminRecentOrdersPanel from "@/components/admin/AdminRecentOrdersPanel";
 import AdminEnrollForm from "@/components/admin/AdminEnrollForm";
 import AdminWarningsButton from "@/components/admin/AdminWarningsButton";
 import AdminLockedUsersPanel from "@/components/admin/AdminLockedUsersPanel";
@@ -96,24 +97,11 @@ export default async function AdminDashboardPage() {
 
         <section>
           <h2 className="font-bold text-brand-navy mb-4">{dict.admin.recentOrders}</h2>
-          <div className="rounded-2xl border border-black/10 bg-white divide-y divide-black/5">
-            {recentOrders.length === 0 && (
-              <p className="p-5 text-sm text-brand-navy/50">{dict.admin.none}</p>
-            )}
-            {recentOrders.map((order) => (
-              <div key={order.id} className="flex items-center justify-between px-5 py-3 text-sm">
-                <span className="text-brand-navy">
-                  {order.name} — {order.book.title}
-                </span>
-                <span
-                  className={`text-xs font-semibold rounded-full px-2.5 py-1 ${
-                    order.status === "CONFIRMED" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {order.status === "CONFIRMED" ? dict.admin.confirmed : dict.admin.rejected}
-                </span>
-              </div>
-            ))}
+          <div className="rounded-2xl border border-black/10 bg-white overflow-hidden">
+            <AdminRecentOrdersPanel
+              orders={recentOrders.map((o) => ({ ...o, status: o.status as "CONFIRMED" | "REJECTED" }))}
+              locale={locale}
+            />
           </div>
         </section>
       </div>

@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db";
 import { mockPaymentProvider } from "@/lib/payments/mock";
 import { getSessionUserId } from "@/lib/auth";
-import { DELIVERY_METHODS, DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_METHODS, DELIVERY_FEES, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -12,12 +12,15 @@ export async function POST(req: Request) {
     name: string;
     phone: string;
     address: string;
-    provider: "click" | "payme";
+    provider: PaymentProviderId;
     deliveryMethod?: DeliveryMethod;
   };
 
   if (!items?.length || !name || !phone || !address || !provider) {
     return NextResponse.json({ error: "Barcha maydonlarni to'ldiring" }, { status: 400 });
+  }
+  if (!PAYMENT_PROVIDERS.includes(provider)) {
+    return NextResponse.json({ error: "To'lov usuli noto'g'ri" }, { status: 400 });
   }
   if (deliveryMethod && !DELIVERY_METHODS.includes(deliveryMethod)) {
     return NextResponse.json({ error: "Yetkazib berish usuli noto'g'ri" }, { status: 400 });

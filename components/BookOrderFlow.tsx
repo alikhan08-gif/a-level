@@ -5,7 +5,7 @@ import { getDictionary, formatTemplate, type Locale } from "@/lib/i18n/dictionar
 import { formatPrice } from "@/lib/format";
 import PaymentMethodButton from "@/components/PaymentMethodButton";
 import DeliveryMethodButton from "@/components/DeliveryMethodButton";
-import { DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_FEES, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
 
 type Step = "form" | "delivery" | "payment" | "receipt" | "submitted";
 
@@ -13,7 +13,7 @@ type Receipt = {
   receiptRef: string;
   amount: number;
   paidAt: string;
-  provider: "click" | "payme";
+  provider: PaymentProviderId;
 };
 
 export default function BookOrderFlow({
@@ -53,7 +53,7 @@ export default function BookOrderFlow({
     setStep("payment");
   }
 
-  async function handlePay(provider: "click" | "payme") {
+  async function handlePay(provider: PaymentProviderId) {
     setLoading(true);
     setError(null);
     try {
@@ -165,8 +165,9 @@ export default function BookOrderFlow({
             {dict.kitoblar.currency}
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <PaymentMethodButton provider="click" disabled={loading} onClick={() => handlePay("click")} />
-            <PaymentMethodButton provider="payme" disabled={loading} onClick={() => handlePay("payme")} />
+            {PAYMENT_PROVIDERS.map((provider) => (
+              <PaymentMethodButton key={provider} provider={provider} disabled={loading} onClick={() => handlePay(provider)} />
+            ))}
           </div>
           {loading && <p className="text-sm text-brand-navy/50">{dict.bookOrder.payInProgress}</p>}
           <button
@@ -186,6 +187,7 @@ export default function BookOrderFlow({
             <div className="flex justify-between"><span>{dict.bookOrder.receiptNumber}</span><span>{receipt.receiptRef}</span></div>
             <div className="flex justify-between"><span>{dict.bookOrder.amount}</span><span>{receipt.amount.toLocaleString("uz-UZ")} {dict.kitoblar.currency}</span></div>
             <div className="flex justify-between"><span>{dict.bookOrder.method}</span><span>{receipt.provider.toUpperCase()}</span></div>
+
             <div className="flex justify-between"><span>{dict.bookOrder.date}</span><span>{new Date(receipt.paidAt).toLocaleString("uz-UZ")}</span></div>
           </div>
           <div className="grid gap-3">
