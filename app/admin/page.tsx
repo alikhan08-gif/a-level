@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSessionAdminId } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import AdminOrdersPanel from "@/components/admin/AdminOrdersPanel";
+import AdminShippingPanel from "@/components/admin/AdminShippingPanel";
 import AdminEnrollForm from "@/components/admin/AdminEnrollForm";
 import AdminWarningsButton from "@/components/admin/AdminWarningsButton";
 import AdminLockedUsersPanel from "@/components/admin/AdminLockedUsersPanel";
@@ -15,14 +16,19 @@ export default async function AdminDashboardPage() {
   const adminId = await getSessionAdminId();
   if (!adminId) redirect("/admin/login");
 
-  const [pendingOrders, recentOrders, courses, lockedUsers, locale] = await Promise.all([
+  const [pendingOrders, shippingOrders, recentOrders, courses, lockedUsers, locale] = await Promise.all([
     prisma.bookOrder.findMany({
       where: { status: "AWAITING_ADMIN" },
       include: { book: true },
       orderBy: { createdAt: "asc" },
     }),
     prisma.bookOrder.findMany({
-      where: { status: { in: ["CONFIRMED", "REJECTED"] } },
+      where: { status: { in: ["CONFIRMED", "DELIVERING"] } },
+      include: { book: true },
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.bookOrder.findMany({
+      where: { status: { in: ["DELIVERED", "REJECTED"] } },
       include: { book: true },
       orderBy: { createdAt: "desc" },
       take: 10,
@@ -60,6 +66,16 @@ export default async function AdminDashboardPage() {
         </section>
 
         <section>
+          <h2 className="font-bold text-brand-navy mb-4">
+            {formatTemplate(dict.admin.shippingSection, { count: shippingOrders.length })}
+          </h2>
+          <AdminShippingPanel
+            orders={shippingOrders.map((o) => ({ ...o, status: o.status as "CONFIRMED" | "DELIVERING" }))}
+            locale={locale}
+          />
+        </section>
+
+        <section>
           <h2 className="font-bold text-brand-navy mb-4">{dict.admin.enrollSection}</h2>
           <AdminEnrollForm courses={courses} locale={locale} />
         </section>
@@ -84,10 +100,10 @@ export default async function AdminDashboardPage() {
                 </span>
                 <span
                   className={`text-xs font-semibold rounded-full px-2.5 py-1 ${
-                    order.status === "CONFIRMED" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    order.status === "DELIVERED" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                   }`}
                 >
-                  {order.status === "CONFIRMED" ? dict.admin.confirmed : dict.admin.rejected}
+                  {order.status === "DELIVERED" ? dict.admin.delivered : dict.admin.rejected}
                 </span>
               </div>
             ))}

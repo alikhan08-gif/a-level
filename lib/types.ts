@@ -22,12 +22,21 @@ export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
 export const COHORT_STATUSES = ["OPEN", "CLOSED"] as const;
 export type CohortStatus = (typeof COHORT_STATUSES)[number];
 
-export const ORDER_STATUSES = ["PENDING", "AWAITING_ADMIN", "CONFIRMED", "REJECTED"] as const;
+export const ORDER_STATUSES = [
+  "PENDING",
+  "AWAITING_ADMIN",
+  "CONFIRMED",
+  "DELIVERING",
+  "DELIVERED",
+  "REJECTED",
+] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING: "Boshlangan",
   AWAITING_ADMIN: "Admin tasdig'ini kutmoqda",
   CONFIRMED: "Tasdiqlangan",
+  DELIVERING: "Yetkazilmoqda",
+  DELIVERED: "Yetkazib berildi",
   REJECTED: "Rad etilgan",
 };
