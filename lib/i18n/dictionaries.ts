@@ -264,6 +264,11 @@ export const dictionaries = {
       cohortNoStudents: "Bu patokda o'quvchi yo'q",
       cohortViewButton: "Ko'rish",
       cohortPageSizeLabel: "Ko'rsatish soni",
+      ratingLink: "Reyting",
+      ratingTitle: "Reyting (patoklar bo'yicha)",
+      ratingBack: "Admin panelga qaytish",
+      ratingUnassigned: "Patoksiz",
+      ratingNoStudents: "Bu patokda faol o'quvchi yo'q",
     },
   },
   en: {
@@ -527,6 +532,11 @@ export const dictionaries = {
       cohortNoStudents: "No students in this cohort",
       cohortViewButton: "View",
       cohortPageSizeLabel: "Show count",
+      ratingLink: "Rating",
+      ratingTitle: "Rating (by cohort)",
+      ratingBack: "Back to admin panel",
+      ratingUnassigned: "No cohort",
+      ratingNoStudents: "No active students in this cohort",
     },
   },
 } as const;

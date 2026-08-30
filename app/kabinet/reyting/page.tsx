@@ -1,17 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/auth";
-import { computeRating, getLeaderboard, type RatingTier } from "@/lib/rating";
+import { computeRating, getLeaderboard, TIER_COLORS } from "@/lib/rating";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const metadata = { title: "Reyting — Harrington Academy" };
-
-const TIER_COLORS: Record<RatingTier, { text: string; bg: string; bar: string }> = {
-  green: { text: "text-green-600", bg: "bg-green-50", bar: "#16a34a" },
-  yellow: { text: "text-amber-600", bg: "bg-amber-50", bar: "#d97706" },
-  red: { text: "text-red-600", bg: "bg-red-50", bar: "#dc2626" },
-};
 
 function Bar({ label, value, currency }: { label: string; value: number | null; currency?: string }) {
   return (

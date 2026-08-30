@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/db";
 import { progressForViewCount } from "@/lib/progress";
+import type { CohortStatus } from "@/lib/types";
 
 export type RatingTier = "green" | "yellow" | "red";
+
+export const TIER_COLORS: Record<RatingTier, { text: string; bg: string; bar: string }> = {
+  green: { text: "text-green-600", bg: "bg-green-50", bar: "#16a34a" },
+  yellow: { text: "text-amber-600", bg: "bg-amber-50", bar: "#d97706" },
+  red: { text: "text-red-600", bg: "bg-red-50", bar: "#dc2626" },
+};
 
 export function getRatingTier(rating: number): RatingTier {
   if (rating > 60) return "green";
@@ -96,6 +103,42 @@ export async function getLeaderboard() {
   entries.sort((a, b) => b.rating - a.rating);
 
   return entries.map((entry, index) => ({ ...entry, rank: index + 1 }));
+}
+
+// Same leaderboard, but grouped by cohort ("patok") for the admin panel —
+// students see the flat combined ranking (getLeaderboard); admins see it
+// broken down patok by patok, plus a bucket for legacy users who predate
+// the cohort system and were never assigned one.
+export async function getLeaderboardGroupedByCohort() {
+  const [users, cohorts] = await Promise.all([
+    prisma.user.findMany({
+      where: { enrollments: { some: { status: "ACTIVE" } } },
+      select: { id: true, firstName: true, lastName: true, cohortId: true },
+    }),
+    prisma.cohort.findMany({ orderBy: { createdAt: "asc" } }),
+  ]);
+
+  const ratings = await Promise.all(
+    users.map(async (u) => {
+      const { rating, tier } = await computeRating(u.id);
+      return { userId: u.id, name: `${u.firstName} ${u.lastName}`.trim(), cohortId: u.cohortId, rating, tier };
+    })
+  );
+
+  function rank(entries: typeof ratings) {
+    return [...entries].sort((a, b) => b.rating - a.rating).map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  const groups = cohorts.map((cohort) => ({
+    cohortId: cohort.id,
+    cohortName: cohort.name,
+    cohortStatus: cohort.status as CohortStatus,
+    entries: rank(ratings.filter((r) => r.cohortId === cohort.id)),
+  }));
+
+  const unassigned = rank(ratings.filter((r) => !r.cohortId));
+
+  return { groups, unassigned };
 }
 
 // Daily cron: any user with at least one ACTIVE enrollment who hasn't

@@ -42,6 +42,9 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/patoklar" className="text-sm font-semibold text-brand-navy hover:underline">
               {dict.admin.cohorts}
             </Link>
+            <Link href="/admin/reyting" className="text-sm font-semibold text-brand-navy hover:underline">
+              {dict.admin.ratingLink}
+            </Link>
             <Link href="/admin/hisobotlar" className="text-sm font-semibold text-brand-navy hover:underline">
               {dict.admin.reports}
             </Link>
