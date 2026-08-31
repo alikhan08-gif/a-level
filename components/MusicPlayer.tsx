@@ -76,7 +76,13 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
       playerRef.current = new window.YT.Player(hostRef.current, {
         playerVars: { controls: 0, disablekb: 1, playsinline: 1 },
         events: {
-          onReady: () => setReady(true),
+          onReady: (e) => {
+            // Set the starting volume before anything ever plays, so the
+            // very first track can't briefly blast at YouTube's own
+            // default before our slider's value takes effect.
+            e.target.setVolume(volume);
+            setReady(true);
+          },
           onStateChange: (e) => {
             setPlaying(e.data === window.YT!.PlayerState.PLAYING);
           },
@@ -87,6 +93,33 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
       cancelled = true;
     };
   }, []);
+
+  // Hook into the device's own media controls (lock screen, headset/hardware
+  // media buttons) so play/pause — and on most platforms, volume — can be
+  // driven from outside the page too, not just this panel's own buttons.
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.setActionHandler("play", () => playerRef.current?.playVideo());
+    navigator.mediaSession.setActionHandler("pause", () => playerRef.current?.pauseVideo());
+    return () => {
+      navigator.mediaSession.setActionHandler("play", null);
+      navigator.mediaSession.setActionHandler("pause", null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !current) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: current.title,
+      artist: "Harrington Academy",
+      artwork: [{ src: `https://img.youtube.com/vi/${current.id}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" }],
+    });
+  }, [current]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !current) return;
+    navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }, [playing, current]);
 
   // Poll playback progress while a track is loaded.
   useEffect(() => {
@@ -127,9 +160,11 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
     const player = playerRef.current;
     if (!player || !ready) return;
     setCurrent(track);
+    // Volume set first, before the new video loads — otherwise there's a
+    // brief moment where the previous (or YouTube's default) level plays.
+    player.setVolume(muted ? 0 : volume);
     player.loadVideoById(track.id);
     player.playVideo();
-    player.setVolume(muted ? 0 : volume);
   }
 
   function togglePlayback() {
