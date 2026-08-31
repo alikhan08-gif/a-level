@@ -191,6 +191,15 @@ export const dictionaries = {
         "Admin tasdiqlagach, kitobingiz tanlagan yetkazib berish xizmati orqali 24–72 soat ichida yetkaziladi. Diqqat-etiborli bo'ling — kitob yetib borganda SMS keladi.",
       genericError: "Xatolik yuz berdi",
     },
+    music: {
+      buttonLabel: "Musiqiy tanafus",
+      panelTitle: "Musiqiy tanafus",
+      searchPlaceholder: "Qo'shiq nomini qidiring...",
+      noResults: "Hech narsa topilmadi",
+      nowPlaying: "Ijro etilmoqda",
+      play: "Ijro etish",
+      pause: "To'xtatish",
+    },
     cart: {
       title: "Savat",
       empty: "Savatingiz bo'sh.",
@@ -472,6 +481,15 @@ export const dictionaries = {
       submittedText:
         "Once confirmed by the admin, your book will be delivered within 24–72 hours via your chosen delivery service. Please stay alert — you'll get an SMS when the book arrives.",
       genericError: "Something went wrong",
+    },
+    music: {
+      buttonLabel: "Music break",
+      panelTitle: "Music break",
+      searchPlaceholder: "Search for a track...",
+      noResults: "Nothing found",
+      nowPlaying: "Now playing",
+      play: "Play",
+      pause: "Pause",
     },
     cart: {
       title: "Cart",

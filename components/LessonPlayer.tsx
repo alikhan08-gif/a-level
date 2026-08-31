@@ -3,45 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { progressForViewCount, LESSON_COMPLETE_VIEW_COUNT } from "@/lib/progress";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
-
-declare global {
-  interface Window {
-    YT?: {
-      Player: new (
-        el: HTMLElement,
-        opts: {
-          videoId: string;
-          playerVars?: Record<string, unknown>;
-          events?: {
-            onReady?: (e: { target: YTPlayer }) => void;
-            onStateChange?: (e: { data: number; target: YTPlayer }) => void;
-          };
-        }
-      ) => YTPlayer;
-      PlayerState: { ENDED: number; PLAYING: number };
-    };
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
-
-interface YTPlayer {
-  seekTo: (seconds: number, allowSeekAhead: boolean) => void;
-  getCurrentTime: () => number;
-  playVideo: () => void;
-}
-
-let apiLoadPromise: Promise<void> | null = null;
-function loadYoutubeApi(): Promise<void> {
-  if (window.YT?.Player) return Promise.resolve();
-  if (apiLoadPromise) return apiLoadPromise;
-  apiLoadPromise = new Promise((resolve) => {
-    window.onYouTubeIframeAPIReady = () => resolve();
-    const script = document.createElement("script");
-    script.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(script);
-  });
-  return apiLoadPromise;
-}
+import { loadYoutubeApi, type YTPlayer } from "@/lib/youtubeApi";
 
 export default function LessonPlayer({
   lessonId,

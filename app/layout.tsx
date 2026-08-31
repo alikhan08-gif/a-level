@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdminHotkeyListener from "@/components/AdminHotkeyListener";
 import AosInit from "@/components/AosInit";
+import MusicPlayer from "@/components/MusicPlayer";
 import { CartProvider } from "@/lib/cart-context";
 import { getSessionUserId } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -48,6 +49,7 @@ export default async function RootLayout({
           <Footer />
           <AdminHotkeyListener />
           <AosInit />
+          <MusicPlayer locale={locale} />
         </CartProvider>
       </body>
     </html>
