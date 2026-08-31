@@ -15,6 +15,33 @@ type YoutubeResult = { id: string; title: string; channel: string };
 // no static metadata for.
 const LIVE_LIKE_DURATION_SEC = 4 * 60 * 60;
 
+function VolumeIcon({ muted, volume }: { muted: boolean; volume: number }) {
+  if (muted || volume === 0) {
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M11 5 6 9H2v6h4l5 4V5z" />
+        <line x1="23" y1="9" x2="17" y2="15" />
+        <line x1="17" y1="9" x2="23" y2="15" />
+      </svg>
+    );
+  }
+  if (volume < 50) {
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M11 5 6 9H2v6h4l5 4V5z" />
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M11 5 6 9H2v6h4l5 4V5z" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
+  );
+}
+
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const m = Math.floor(seconds / 60);
@@ -34,6 +61,9 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
 
   const [ytResults, setYtResults] = useState<YoutubeResult[]>([]);
   const [ytLoading, setYtLoading] = useState(false);
+  const [volume, setVolume] = useState(80);
+  const [muted, setMuted] = useState(false);
+  const prevVolumeRef = useRef(80);
 
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
@@ -99,6 +129,7 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
     setCurrent(track);
     player.loadVideoById(track.id);
     player.playVideo();
+    player.setVolume(muted ? 0 : volume);
   }
 
   function togglePlayback() {
@@ -116,6 +147,27 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
     setProgress(value);
   }
 
+  function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = Number(e.target.value);
+    setVolume(value);
+    setMuted(value === 0);
+    playerRef.current?.setVolume(value);
+  }
+
+  function toggleMute() {
+    const player = playerRef.current;
+    if (!player) return;
+    if (muted) {
+      setMuted(false);
+      player.setVolume(prevVolumeRef.current || 80);
+      setVolume(prevVolumeRef.current || 80);
+    } else {
+      prevVolumeRef.current = volume || 80;
+      setMuted(true);
+      player.setVolume(0);
+    }
+  }
+
   const filtered = MUSIC_TRACKS.filter((t) => t.title.toLowerCase().includes(query.toLowerCase()));
   const isLiveLike = ("live" in (current ?? {}) && (current as MusicTrack).live) || duration > LIVE_LIKE_DURATION_SEC;
 
@@ -127,8 +179,12 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
       </div>
 
       <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
-        {open && (
-          <div className="w-[320px] max-w-[90vw] rounded-2xl border border-black/10 bg-white shadow-2xl overflow-hidden">
+        <div
+          aria-hidden={!open}
+          className={`w-[320px] max-w-[90vw] origin-bottom-right rounded-2xl border border-black/10 bg-white shadow-2xl overflow-hidden transition-all duration-200 ease-out ${
+            open ? "opacity-100 scale-100 translate-y-0" : "pointer-events-none opacity-0 scale-95 translate-y-2"
+          }`}
+        >
             <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
               <h3 className="font-bold text-brand-navy text-sm">{dict.music.panelTitle}</h3>
               <button
@@ -293,10 +349,28 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
                     </>
                   )}
                 </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    aria-label={muted ? "Ovozni yoqish" : "Ovozni o'chirish"}
+                    className="flex h-6 w-6 shrink-0 items-center justify-center text-brand-navy/60 hover:text-brand-navy"
+                  >
+                    <VolumeIcon muted={muted} volume={volume} />
+                  </button>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={muted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="flex-1 accent-[color:var(--brand-navy)]"
+                  />
+                  <span className="text-[10px] text-brand-navy/50 w-7 text-right">{muted ? 0 : volume}%</span>
+                </div>
               </div>
             )}
           </div>
-        )}
 
         <button
           type="button"
