@@ -199,6 +199,9 @@ export const dictionaries = {
       nowPlaying: "Ijro etilmoqda",
       play: "Ijro etish",
       pause: "To'xtatish",
+      youtubeResults: "YouTube'dan natijalar",
+      youtubeSearching: "Qidirilmoqda...",
+      youtubeUnverified: "Bu natijalar tekshirilmagan — ehtiyot bo'ling",
     },
     cart: {
       title: "Savat",
@@ -490,6 +493,9 @@ export const dictionaries = {
       nowPlaying: "Now playing",
       play: "Play",
       pause: "Pause",
+      youtubeResults: "Results from YouTube",
+      youtubeSearching: "Searching...",
+      youtubeUnverified: "These results aren't vetted — use caution",
     },
     cart: {
       title: "Cart",
