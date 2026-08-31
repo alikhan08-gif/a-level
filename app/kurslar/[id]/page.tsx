@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCourseById } from "@/lib/data";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary, localize } from "@/lib/i18n/dictionaries";
-import { formatPrice } from "@/lib/format";
+import CourseEnrollGate from "@/components/CourseEnrollGate";
 
 export default async function CourseDetailPage({
   params,
@@ -28,18 +27,13 @@ export default async function CourseDetailPage({
         {localize(course.description, course.descriptionEn, locale)}
       </p>
 
-      <div className="flex flex-wrap items-center gap-4 mb-10">
-        <span className="text-2xl font-bold text-brand-navy">
-          {formatPrice(course.price)} {dict.kitoblar.currency}
-        </span>
-        <Link
-          href={course.telegramBotLink ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-full bg-brand-navy px-6 py-3 text-white font-semibold hover:bg-brand-navy-light transition-colors"
-        >
-          {dict.kurslarDetail.enroll}
-        </Link>
+      <div className="mb-10">
+        <CourseEnrollGate
+          price={course.price}
+          currency={dict.kitoblar.currency}
+          telegramBotLink={course.telegramBotLink}
+          locale={locale}
+        />
       </div>
 
       <h2 className="text-xl font-bold text-brand-navy mb-4">{dict.kurslarDetail.program}</h2>

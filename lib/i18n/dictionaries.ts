@@ -88,6 +88,10 @@ export const dictionaries = {
     kurslarDetail: {
       enroll: "Kursga yozilish",
       program: "Kurs dasturi",
+      agreementPrefix: "Men",
+      agreementLink: "ommaviy oferta shartnomasi",
+      agreementSuffix: "shartlariga roziman",
+      agreementRequired: "Davom etish uchun shartnoma shartlariga rozilik bildiring",
     },
     kitoblar: {
       title: "Kitoblar",
@@ -382,6 +386,10 @@ export const dictionaries = {
     kurslarDetail: {
       enroll: "Enroll in course",
       program: "Course program",
+      agreementPrefix: "I agree to the terms of the",
+      agreementLink: "public offer agreement",
+      agreementSuffix: "",
+      agreementRequired: "Please agree to the terms of the contract to continue",
     },
     kitoblar: {
       title: "Books",
