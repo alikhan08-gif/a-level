@@ -5,7 +5,7 @@
 export type MusicTrack = {
   id: string; // YouTube video id
   title: string;
-  category: "Lofi" | "Jazz" | "Pianino" | "Ambient" | "Fokus";
+  category: "Lofi" | "Jazz" | "Pianino" | "Ambient" | "Fokus" | "O'zbek";
   live?: boolean; // 24/7 stream — no fixed duration, so hide the seek bar
 };
 
@@ -19,4 +19,11 @@ export const MUSIC_TRACKS: MusicTrack[] = [
   { id: "2oJqY4nhL-c", title: "15 daqiqalik dam — kuch to'plash uchun uyqu", category: "Ambient" },
   { id: "XVFUtEh9zrY", title: "Yozgi lofi — dam olish uchun sokin ritm", category: "Lofi" },
   { id: "yUXwdnOJ_z0", title: "Yulduzlar ostida uyqu — 8 soatlik tinch ambient", category: "Ambient" },
+  { id: "vSA7yMrTETg", title: "Xamdam Sobirov — Peshta", category: "O'zbek" },
+  { id: "JPYXpBS1dv4", title: "Xamdam Sobirov — Malohat", category: "O'zbek" },
+  { id: "-QBnFEVL9Jo", title: "Xamdam Sobirov — Kapalagim", category: "O'zbek" },
+  { id: "TSPGlIkTsVk", title: "Xamdam Sobirov — Esla meni", category: "O'zbek" },
+  { id: "RRaZwB56djI", title: "Xamdam Sobirov — Maktabimda", category: "O'zbek" },
+  { id: "dTWEFx3DeM8", title: "Mirjalol Nematov — Anor", category: "O'zbek" },
+  { id: "II8th4NZJLM", title: "Mirjalol Nematov — Qaro ko'z", category: "O'zbek" },
 ];
