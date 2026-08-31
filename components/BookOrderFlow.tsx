@@ -5,7 +5,7 @@ import { getDictionary, formatTemplate, type Locale } from "@/lib/i18n/dictionar
 import { formatPrice } from "@/lib/format";
 import PaymentMethodButton from "@/components/PaymentMethodButton";
 import DeliveryMethodButton from "@/components/DeliveryMethodButton";
-import { DELIVERY_FEES, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
+import { getDeliveryFee, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
 
 type Step = "form" | "delivery" | "payment" | "receipt" | "submitted";
 
@@ -142,7 +142,7 @@ export default function BookOrderFlow({
           <div className="grid grid-cols-2 gap-3">
             <DeliveryMethodButton
               method="UZPOST"
-              subtitle={formatTemplate(dict.bookOrder.deliveryFeeUpfront, { amount: formatPrice(DELIVERY_FEES.UZPOST) })}
+              subtitle={formatTemplate(dict.bookOrder.deliveryFeeUpfront, { amount: formatPrice(getDeliveryFee("UZPOST", 1)) })}
               onClick={() => handleChooseDelivery("UZPOST")}
             />
             <DeliveryMethodButton
@@ -161,7 +161,7 @@ export default function BookOrderFlow({
         <div className="space-y-4">
           <h2 className="font-bold text-brand-navy mb-1">{dict.bookOrder.choosePayment}</h2>
           <p className="text-sm text-brand-navy/60">
-            &quot;{bookTitle}&quot; — {formatPrice(price + (deliveryMethod ? DELIVERY_FEES[deliveryMethod] : 0))}{" "}
+            &quot;{bookTitle}&quot; — {formatPrice(price + (deliveryMethod ? getDeliveryFee(deliveryMethod, 1) : 0))}{" "}
             {dict.kitoblar.currency}
           </p>
           <div className="grid grid-cols-2 gap-3">

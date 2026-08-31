@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
-import { DELIVERY_METHOD_LABELS, DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_METHOD_LABELS, getDeliveryFee, type DeliveryMethod } from "@/lib/types";
 
 type Order = {
   id: string;
@@ -31,7 +31,9 @@ export default function AdminRecentOrdersPanel({ orders, locale }: { orders: Ord
     <div className="divide-y divide-black/5">
       {orders.map((order) => {
         const open = openId === order.id;
-        const deliveryFee = order.deliveryMethod ? DELIVERY_FEES[order.deliveryMethod as DeliveryMethod] ?? 0 : 0;
+        const deliveryFee = order.deliveryMethod
+          ? getDeliveryFee(order.deliveryMethod as DeliveryMethod, order.quantity)
+          : 0;
         const total = order.book.price * order.quantity + deliveryFee;
         return (
           <div key={order.id}>

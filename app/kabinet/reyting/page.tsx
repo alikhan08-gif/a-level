@@ -4,6 +4,7 @@ import { getSessionUserId } from "@/lib/auth";
 import { computeRating, getLeaderboard, TIER_COLORS } from "@/lib/rating";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import BackButton from "@/components/BackButton";
 
 export const metadata = { title: "Reyting — Harrington Academy" };
 
@@ -44,6 +45,9 @@ export default async function RatingPage() {
   return (
     <div className="bg-black/[0.015] min-h-[70vh]">
       <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="mb-6">
+          <BackButton label={dict.kurslar.back} />
+        </div>
         <h1 className="text-2xl font-bold text-brand-navy mb-1">{dict.rating.title}</h1>
         <p className="text-brand-navy/60 mb-8">{dict.rating.subtitle}</p>
 

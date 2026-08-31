@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary, localize } from "@/lib/i18n/dictionaries";
 import WrittenWorkForm from "@/components/WrittenWorkForm";
+import BackButton from "@/components/BackButton";
 
 export const metadata = { title: "Yozma ish — Harrington Academy" };
 
@@ -34,6 +35,9 @@ export default async function WrittenWorkPage() {
   return (
     <div className="bg-black/[0.015] min-h-[70vh]">
       <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="mb-6">
+          <BackButton label={dict.kurslar.back} />
+        </div>
         <h1 className="text-2xl font-bold text-brand-navy mb-1">{dict.rating.writtenWorkTitle}</h1>
         <p className="text-brand-navy/60 mb-8">{dict.rating.writtenWorkSubtitle}</p>
 

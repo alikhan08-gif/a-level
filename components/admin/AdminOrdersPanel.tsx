@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
-import { DELIVERY_METHOD_LABELS, DELIVERY_FEES, type DeliveryMethod } from "@/lib/types";
+import { DELIVERY_METHOD_LABELS, getDeliveryFee, type DeliveryMethod } from "@/lib/types";
 
 type Order = {
   id: string;
@@ -75,8 +75,9 @@ export default function AdminOrdersPanel({ orders, locale }: { orders: Order[]; 
       {groups.map((group) => {
         const first = group[0];
         const ids = group.map((o) => o.id);
+        const totalQuantity = group.reduce((sum, o) => sum + o.quantity, 0);
         const booksTotal = group.reduce((sum, o) => sum + o.book.price * o.quantity, 0);
-        const deliveryFee = first.deliveryMethod ? DELIVERY_FEES[first.deliveryMethod as DeliveryMethod] ?? 0 : 0;
+        const deliveryFee = first.deliveryMethod ? getDeliveryFee(first.deliveryMethod as DeliveryMethod, totalQuantity) : 0;
         const total = booksTotal + deliveryFee;
         return (
           <div key={first.id} className="rounded-2xl border border-black/10 bg-white p-5">

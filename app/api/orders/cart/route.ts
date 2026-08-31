@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db";
 import { mockPaymentProvider } from "@/lib/payments/mock";
 import { getSessionUserId } from "@/lib/auth";
-import { DELIVERY_METHODS, DELIVERY_FEES, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
+import { DELIVERY_METHODS, getDeliveryFee, PAYMENT_PROVIDERS, type DeliveryMethod, type PaymentProviderId } from "@/lib/types";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -33,8 +33,9 @@ export async function POST(req: Request) {
   const bookById = new Map(books.map((b) => [b.id, b]));
 
   const groupId = randomUUID();
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
   const booksTotal = items.reduce((sum, item) => sum + (bookById.get(item.bookId)?.price ?? 0) * item.quantity, 0);
-  const deliveryFee = deliveryMethod ? DELIVERY_FEES[deliveryMethod] : 0;
+  const deliveryFee = deliveryMethod ? getDeliveryFee(deliveryMethod, totalQuantity) : 0;
   const totalAmount = booksTotal + deliveryFee;
   const userId = await getSessionUserId();
 
