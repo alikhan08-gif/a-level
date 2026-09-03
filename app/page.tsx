@@ -38,9 +38,8 @@ const FEATURE_ICONS: ReactNode[] = [
     <path key="b" d="M7 16v-4M12 16V8M17 16v-7" />
   </>,
   <>
-    <rect key="a" x="9" y="2" width="6" height="12" rx="3" />
-    <path key="b" d="M5 10a7 7 0 0 0 14 0" />
-    <path key="c" d="M12 19v3M8 22h8" />
+    <path key="a" d="M23 7l-7 5 7 5V7Z" />
+    <rect key="b" x="1" y="5" width="15" height="14" rx="2" />
   </>,
   <>
     <path key="a" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
