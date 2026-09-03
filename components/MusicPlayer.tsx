@@ -213,11 +213,15 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
         <div ref={hostRef} />
       </div>
 
-      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+      {/* pointer-events-none here so the (mostly empty) fixed box doesn't
+          swallow clicks on whatever page content sits underneath it when
+          the panel is closed — the button and open panel opt back in with
+          pointer-events-auto below. */}
+      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3 pointer-events-none">
         <div
           aria-hidden={!open}
           className={`w-[320px] max-w-[90vw] origin-bottom-right rounded-2xl border border-black/10 bg-white shadow-2xl overflow-hidden transition-all duration-200 ease-out ${
-            open ? "opacity-100 scale-100 translate-y-0" : "pointer-events-none opacity-0 scale-95 translate-y-2"
+            open ? "pointer-events-auto opacity-100 scale-100 translate-y-0" : "pointer-events-none opacity-0 scale-95 translate-y-2"
           }`}
         >
             <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
@@ -411,7 +415,7 @@ export default function MusicPlayer({ locale }: { locale: Locale }) {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label={dict.music.buttonLabel}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-navy text-white shadow-xl hover:bg-brand-navy-light transition-colors relative"
+          className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-navy text-white shadow-xl hover:bg-brand-navy-light transition-colors relative"
         >
           {playing && (
             <span className="absolute inset-0 rounded-full bg-brand-navy animate-ping opacity-40" aria-hidden="true" />
