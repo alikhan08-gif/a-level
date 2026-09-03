@@ -38,24 +38,24 @@ export const dictionaries = {
       teamTitle: "Bizning jamoa",
       problems: [
         {
-          from: "Ma'muriy ustoz",
-          text: "Men kimyo o'qituvchisiman, ingliz tilim biroz zaif. A-Level sertifikatini olishim mumkinmi?",
-          answer: "Albatta! Darslarimiz o'zbek tilida olib boriladi, ingliz tili shart emas. O'rtacha 6-8 oyda A-Level sertifikatiga tayyor bo'lasiz.",
+          from: "Munojat ustoz",
+          text: "Men kimyo o'qituvchisiman, ingliz tilim no'l, lekin toifam bor. Xalqaro A-Level sertifikatini ololamanmi?",
+          answer: "Albatta, ola olasiz. Biz tuzgan dastur bo'yicha ingliz tilini ham xalqaro darajada birdek o'rganasiz. Maxsus A-Level kitoblarimiz orqali 0 dan 6-8 oyda tayyor bo'lishingiz mumkin.",
         },
         {
-          from: "Zohid",
-          text: "9-sinf o'quvchisiman. 6 oyda IELTS ochiq milliy sertifikatdan A+ ola olamanmi?",
-          answer: "Ha, mumkin! Tayyorlov kursimiz aynan shu maqsad uchun tuzilgan — muntazam shug'ullansangiz 6 oyda A+ ga yetish real.",
+          from: "Ximik",
+          text: "O'g'lim 10-sinfda, IELTS'dan 6 olgan, milliy sertifikatdan A+ olgan. Qancha vaqtda A-Level xalqaro sertifikatini ola oladi?",
+          answer: "Kimyoni yaxshi bilar ekanlar, ingliz tilidan IELTS olgan ekanlar — ular uchun 5 oylik intensiv tayyorlov kursimiz bor.",
         },
         {
-          from: "Malika",
-          text: "Ishlayman, vaqtim kam. Darslarni o'z vaqtimda, jonli efirsiz ham o'qiy olamanmi?",
-          answer: "Albatta. Barcha darslar video shaklida tayyor turadi, o'zingizga qulay vaqtda, xohlagancha qayta ko'rib o'qiy olasiz.",
+          from: "Gulnoza",
+          text: "Darslar o'zbek tilidami yoki ingliz tilida o'tiladimi?",
+          answer: "Ko'proq o'zbek tilida tushuntiriladi. Kerakli qismi esa inglizcha o'tiladi.",
         },
         {
-          from: "Sardor",
-          text: "Attestatsiyaga tayyorgarlik ko'rish uchun qancha vaqt kerak bo'ladi?",
-          answer: "O'rtacha 4-6 oy yetarli. Kurs davomida har bir mavzu bosqichma-bosqich, testlar bilan mustahkamlanadi.",
+          from: "M.Shamsiyev",
+          text: "Kurs tugaganda, sertifikat imtihoniga ro'yxatdan o'tishga ham yordam berasizmi?",
+          answer: "Albatta, u tomondan ham yordam beriladi. Bundan tashqari, bilimingizni sinab ko'rib, imtihonga tayyor yoki tayyor emasligingizni ham aniqlab beramiz.",
         },
       ],
       features: [
@@ -336,24 +336,24 @@ export const dictionaries = {
       teamTitle: "Our team",
       problems: [
         {
-          from: "School teacher",
-          text: "I teach chemistry and my English is a bit weak. Can I still get an A-Level certificate?",
-          answer: "Absolutely! Our lessons are taught in Uzbek, so English isn't required. Most students are ready for A-Level in 6-8 months.",
+          from: "Teacher Munojat",
+          text: "I teach chemistry and my English is at zero, but I do hold a teaching category. Can I still get the international A-Level certificate?",
+          answer: "Absolutely, you can. Under our program you'll learn English to an international standard too. Through our dedicated A-Level books, you can go from zero to ready in 6-8 months.",
         },
         {
-          from: "Zohid",
-          text: "I'm a 9th grader. Can I get an A+ on the national certificate open-IELTS track in 6 months?",
-          answer: "Yes, it's doable! Our prep course is built exactly for this — with consistent study, reaching an A+ in 6 months is realistic.",
+          from: "Ximik",
+          text: "My son is in 10th grade, scored a 6 on IELTS, and got an A+ on the national certificate. How long would it take him to get the international A-Level certificate?",
+          answer: "Since he already knows chemistry well and has an IELTS score, he'd join our 5-month intensive prep course.",
         },
         {
-          from: "Malika",
-          text: "I work full-time and have little free time. Can I study at my own pace, without live sessions?",
-          answer: "Of course. Every lesson is pre-recorded on video, so you can study whenever suits you and rewatch as many times as you like.",
+          from: "Gulnoza",
+          text: "Are the lessons taught in Uzbek or in English?",
+          answer: "Mostly explained in Uzbek. The parts that need to be in English are taught in English.",
         },
         {
-          from: "Sardor",
-          text: "How long does it take to prepare for the attestation exam?",
-          answer: "4-6 months on average. The course covers every topic step by step, reinforced with practice tests along the way.",
+          from: "M.Shamsiyev",
+          text: "Once the course ends, do you also help with registering for the certificate exam?",
+          answer: "Absolutely, we help with that too. On top of that, we test your knowledge to determine whether you're ready for the exam or not.",
         },
       ],
       features: [
