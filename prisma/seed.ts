@@ -9,7 +9,7 @@ const SUBJECTS = ["KIMYO", "BIOLOGIYA", "MATH"] as const;
 const SUBJECT_TITLES: Record<(typeof SUBJECTS)[number], string> = {
   KIMYO: "Kimyo",
   BIOLOGIYA: "Biologiya",
-  MATH: "Math",
+  MATH: "Matematika",
 };
 
 const SUBJECT_TITLES_EN: Record<(typeof SUBJECTS)[number], string> = {
